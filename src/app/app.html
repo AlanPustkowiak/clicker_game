@@ -1,1 +1,6 @@
-<p class="flex">It works</p>
+<div class="flex flex-col justify-center items-center h-screen">
+    <button class="btn btn-primary border border-solid rounded-2xl p-2" (click)="onClick()">Click Me</button>
+    @if (clickCount() > 0) {
+        <p class="ml-4 text-lg">You have clicked the button {{ clickCount() }} times!</p>
+    }
+</div>
