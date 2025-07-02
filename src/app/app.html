@@ -1,6 +1,23 @@
-<div class="flex flex-col justify-center items-center h-screen">
-    <button class="btn btn-primary border border-solid rounded-2xl p-2" (click)="onClick()">Click Me</button>
-    @if (clickCount() > 0) {
-        <p class="ml-4 text-lg">You have clicked the button {{ clickCount() }} times!</p>
+<div class="flex flex-col h-screen">
+    <div class="flex-1"></div>
+
+    <div class="flex flex-col justify-center items-center relative">
+        <button class="btn btn-primary border border-solid rounded-2xl p-2" (click)="onClick()">Click Me</button>
+        @if (clickCount() > 0) {
+            <h4 class="absolute top-full mt-4">Your points: {{ clickCount() }}</h4>
+        }
+    </div>
+
+    <div class="flex-1"></div>
+
+    
+    @if(shouldShowShop()) {
+        <div class="absolute bottom-0 left-0 right-0">
+            <app-shop
+                [upgrades]="upgrades()"
+                [currentPoints]="clickCount()"
+                (purchase)="onPurchase($event)">
+            </app-shop>
+        </div>
     }
 </div>
