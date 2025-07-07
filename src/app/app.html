@@ -2,9 +2,20 @@
     <div class="flex-1"></div>
 
     <div class="flex flex-col justify-center items-center relative">
-        <button class="btn btn-primary border border-solid rounded-2xl p-2" (click)="onClick()">Click Me</button>
+        <button class="btn btn-primary border border-solid rounded-2xl p-2" (click)="onClick($event)">Click Me</button>
         @if (clickCount() > 0) {
             <h4 class="absolute top-full mt-4">Your points: {{ clickCount() }}</h4>
+        }
+
+        @for(animation of animations(); track animation.id){
+            <div 
+            class="absolute pointer-events-none text-green-500 font-bold text-xl animate-float-up"
+            [style.left.px]="animation.x"
+            [style.top.px]="animation.y"
+            [style.transform]="'translateY(0) rotate(' + animation.rotation + 'deg)'"
+            >
+                +{{ animation.value }}
+            </div>
         }
     </div>
 

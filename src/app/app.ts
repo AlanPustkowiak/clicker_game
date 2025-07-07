@@ -1,6 +1,13 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { Upgrade, ShopComponent } from './shop';
+
+interface FloatingAnimation{
+  id: number;
+  x: number;
+  y: number;
+  value: number;
+  rotation: number;
+}
 
 @Component({
   selector: 'app-root',
@@ -10,6 +17,9 @@ import { Upgrade, ShopComponent } from './shop';
 })
 export class App {
   protected title = 'clicker_game';
+
+  animations = signal<FloatingAnimation[]>([]);
+  private animationId = 0;
 
   clickCount = signal<number>(0);
   clickValue = signal<number>(1);
@@ -33,8 +43,11 @@ export class App {
     }
   ])
 
-  protected onClick(): void {
+  protected onClick(event: MouseEvent): void {
+    const value = this.clickValue();
     this.clickCount.update(count => count + this.clickValue());
+
+    this.addFloatingAnimation(event, value);
   }
 
   onPurchase(upgrade: Upgrade): void {
@@ -48,5 +61,28 @@ export class App {
 
   shouldShowShop(): boolean {
     return this.clickCount() > 10 || this.upgrades().some(u => u.purchased);
+  }
+
+  private addFloatingAnimation(event: MouseEvent, value: number): void {
+    const rect = (event.target as HTMLElement).getBoundingClientRect();
+    const containerRect = (event.target as HTMLElement).offsetParent?.getBoundingClientRect();
+
+    const randomOffsetX = Math.random() * rect.width - rect.width / 2;
+
+    const randomRotation = (Math.random()-0.5) * 90;
+
+    const animation: FloatingAnimation = {
+      id: this.animationId++,
+      x: rect.left - (containerRect?.left || 0) + rect.width / 2 + randomOffsetX,
+      y: rect.top - (containerRect?.top || 0),
+      value,
+      rotation: randomRotation
+    };
+    console.log('Adding animation:', animation);
+    this.animations.update(animations => [...animations, animation]);
+
+    setTimeout(() => {
+      this.animations.update(animations => animations.filter(a => a.id !== animation.id));
+    }, 2000);
   }
 }
